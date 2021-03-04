@@ -1,0 +1,16 @@
+{
+  "name": "fullstack-test-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "babel src -d lib && node ./lib/index.js"
+  },
+  "author": "AleksandrTkach",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.8",
+    "@babel/preset-env": "^7.13.9"
+  }
+}
