@@ -1,3 +1,10 @@
+# Install:
+```
+$ npm i
+$ npm run build
+```
+
+# Task:
 data.js has the input data for this assignment.
 
 Write a method, that accepts 2 parameters:
