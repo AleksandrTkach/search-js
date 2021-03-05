@@ -9,58 +9,82 @@ const filteringObject = {
 	"regions": ["shoulders"]
 };
 
+/**
+ *
+ * @param items
+ * @param filteringObject
+ */
 function customFilter(items, filteringObject) {
-
-	let res = [];
+	let filteredItems = [];
 	let isSearchingForAllItems = true;
 
 	for (const filteringKey in filteringObject) {
+		if (!isSearchingForAllItems) items = filteredItems;
 
-		if (!isSearchingForAllItems) items = res;
-
-		const filteringValues = getType(filteringObject[filteringKey]) === 'string'
+		const neededValues = _getType(filteringObject[filteringKey]) === 'string'
 			? [filteringObject[filteringKey]] : filteringObject[filteringKey];
 
-		res = items.filter(item => isFind(item, filteringKey, filteringValues))
-
+		filteredItems = items.filter(item => _isIsset(item[filteringKey], neededValues))
 		isSearchingForAllItems = false;
 	}
-
-	console.log(res);
+	console.log(filteredItems);
 }
 
-function isFind(item, filteringKey, filteringValues) {
-
-	switch (getType(item[filteringKey])) {
+/**
+ *
+ * @param checkingValues
+ * @param neededValues
+ * @returns {boolean}
+ * @private
+ */
+function _isIsset(checkingValues, neededValues) {
+	switch (_getType(checkingValues)) {
 		case 'string':
-			for (const value of filteringValues)
-				if (item[filteringKey] === value)
+			for (const value of neededValues)
+				if (checkingValues === value)
 					return true;
 		break;
 
 		case 'array':
-			for (const value of filteringValues)
-				if (item[filteringKey].includes(value))
-					return true;
+			if (_isIncludes(checkingValues, neededValues)) return true;
 		break;
 
 		case 'object':
-			item[filteringKey] = JSON.stringify(item[filteringKey]).slice(0, -1).slice(1).split(',');
-			filteringValues = JSON.stringify(filteringValues).slice(0, -1).slice(1).split(',');
+			// object transformation to array strings
+			checkingValues = JSON.stringify(checkingValues).slice(0, -1).slice(1).split(',');
+			neededValues = JSON.stringify(neededValues).slice(0, -1).slice(1).split(',');
 
-			for (const value of filteringValues)
-				if (item[filteringKey].includes(value))
-					return true;
+			if (_isIncludes(checkingValues, neededValues)) return true;
 		break;
 	}
-
 	return false;
 }
 
-function getType (val) {
+/**
+ *
+ * @param val
+ * @returns {string}
+ * @private
+ */
+function _getType(val) {
 	if (typeof val === 'undefined') return 'undefined';
 	if (typeof val === 'object' && !val) return 'null';
 	return ({}).toString.call(val).match(/\s([a-zA-Z]+)/)[1].toLowerCase();
+}
+
+/**
+ *
+ * @param checkingValues
+ * @param neededValues
+ * @returns {boolean}
+ * @private
+ */
+function _isIncludes(checkingValues, neededValues) {
+	for (const value of neededValues) {
+		if (checkingValues.includes(value))
+			return true;
+	}
+	return false
 }
 
 customFilter(data, filteringObject);
